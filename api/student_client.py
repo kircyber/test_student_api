@@ -1,15 +1,26 @@
 from api.endpoints import StudentsEndpoints
 
 class StudentsClient:
-    def __init__(self, client):
+    def __init__(self, client, logger):
         self.client = client
+        self.logger = logger
 
     def get_students(self):
+        self.logger.info("GET /student")
         response = self.client.get(StudentsEndpoints.GET)
+
+        self.logger.info(
+            f"Response: {response.status_code}"
+        )
         return response
 
     def get_student(self, student_id):
+        self.logger.info(f"GET /student/{student_id}")
         response = self.client.get(StudentsEndpoints.GET_STUDENT(student_id))
+
+        self.logger.info(
+            f"Response: {response.status_code}"
+        )
         return response
 
     def create_student(self, student_data):
