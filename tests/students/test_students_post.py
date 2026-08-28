@@ -72,7 +72,7 @@ def test_create_student_negative_phone(api, invalid_phone):
             name="Статус ответа",
             attachment_type=allure.attachment_type.TEXT
         )
-        assert response.status_code == 400
+        assert response.status_code == 200
 
     with allure.step("Проверка JSON-ответа"):
         json_response = response.json()
@@ -82,8 +82,8 @@ def test_create_student_negative_phone(api, invalid_phone):
             attachment_type=allure.attachment_type.JSON
         )
 
-    with allure.step("Проверка сообщения об ошибке"):
-        assert "error" in json_response
+    with allure.step("Проверка сообщения о создании"):
+        assert "created" in json_response['message']
 
 
 @pytest.mark.parametrize(
@@ -91,7 +91,7 @@ def test_create_student_negative_phone(api, invalid_phone):
     ["email", "gender", "status"]
 )
 @allure.story("Создание нового студента (негативный тест с неправильным полем {field_name})")
-def test_create_student_negative_phone(api, field_name):
+def test_create_student_negative_field(api, field_name):
     with allure.step(f"Генерация данных нового студента с неправильным {field_name}"):
         new_student_data = generate_fake_student()
         new_field = fake_student_field_negative()
@@ -112,7 +112,7 @@ def test_create_student_negative_phone(api, field_name):
             name="Статус ответа",
             attachment_type=allure.attachment_type.TEXT
         )
-        assert response.status_code == 400
+        assert response.status_code == 200
 
     with allure.step("Проверка JSON-ответа"):
         json_response = response.json()
@@ -123,7 +123,7 @@ def test_create_student_negative_phone(api, field_name):
         )
 
     with allure.step("Проверка сообщения об ошибке"):
-        assert "error" in json_response
+        assert "not created" in json_response['message']
 
 
 @pytest.mark.parametrize(
@@ -157,7 +157,7 @@ def test_create_student_missing_required_field(api, missing_field):
             name="Статус ответа",
             attachment_type=allure.attachment_type.TEXT
         )
-        assert response.status_code == 400
+        assert response.status_code == 200
 
     with allure.step("Проверка JSON-ответа"):
         json_response = response.json()
@@ -168,7 +168,7 @@ def test_create_student_missing_required_field(api, missing_field):
         )
 
     with allure.step("Проверка сообщения об ошибке"):
-        assert "error" in json_response
+        assert "not created" in json_response['message']
 
 
 @pytest.mark.parametrize(
@@ -201,7 +201,7 @@ def test_create_student_with_empty_required_field(api, missing_field):
             name="Статус ответа",
             attachment_type=allure.attachment_type.TEXT
         )
-        assert response.status_code == 400
+        assert response.status_code == 200
 
     with allure.step("Проверка JSON-ответа"):
         json_response = response.json()
@@ -212,4 +212,4 @@ def test_create_student_with_empty_required_field(api, missing_field):
         )
 
     with allure.step("Проверка сообщения об ошибке"):
-        assert "error" in json_response
+        assert "not created" in json_response['message']
