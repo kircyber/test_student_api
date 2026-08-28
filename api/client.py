@@ -11,7 +11,6 @@ class ApiClient:
 
     def get(self, endpoint, params=None):
         response = self.session.get(f'{self.base_url}/{endpoint}', params=params)
-        response.raise_for_status()
         return response
 
     def post(self, endpoint, data):

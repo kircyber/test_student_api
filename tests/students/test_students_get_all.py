@@ -4,7 +4,7 @@ import allure
 
 @allure.feature("Студенты")
 @allure.story("Получение списка всех студентов")
-def test_students_get_all(api, logger):
+def test_students_get_all(api):
     with allure.step("Получение списка всех студентов"):
         response = api.students.get_students()
 

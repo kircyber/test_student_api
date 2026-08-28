@@ -1,18 +1,14 @@
 import json
 
 import allure
+import pytest
+
 
 @allure.story("Получение данных первого студента")
-def test_students_get_one(api, logger):
-    logger.info("Начало теста")
+def test_students_get_one(api):
     with allure.step("Получение списка всех студентов"):
 
-        logger.info("Отправка GET запроса на получение списка студентов")
         response = api.students.get_students()
-
-        logger.info(
-            f"Получен ответ. Status code: {response.status_code}"
-        )
 
 
         allure.attach(
@@ -31,21 +27,15 @@ def test_students_get_one(api, logger):
 
         with allure.step("Проверка статуса ответа"):
             assert response.status_code == 200
-            logger.info("Статус ответа проверен: 200")
 
 
     students_response = response.json()
 
 
-    logger.info(
-        f"Получен JSON: {json.dumps(students_response, ensure_ascii=False)}"
-    )
-
     with allure.step("Проверка наличия списка студентов в ответе"):
         assert "students" in students_response
         assert students_response["students"], "Список студентов пуст"
 
-        logger.info("Объект 'students' присутствует в ответе")
 
 
     with allure.step("Получение ID первого студента"):
@@ -88,10 +78,27 @@ def test_students_get_one(api, logger):
 
 
 
-    allure.attach(
-        log_content,
 
-    )
+@pytest.mark.parametrize("invalid_student_id", ["invalid_id", "124sfdsaf1343", "!@#$%^&*()", "-235", ""])
+@allure.story("Попытка получения данных студента с некорректным ID")
+def test_students_get_one_negative(api, invalid_student_id):
+
+    with allure.step(f"Попытка получения данных студента с некорректным ID {invalid_student_id}"):
+        response = api.students.get_student(student_id=invalid_student_id)
+
+        allure.attach(
+            f"{response.request.method} {response.request.url}",
+            name="Запрос",
+            attachment_type=allure.attachment_type.TEXT
+        )
+
+    with allure.step("Проверка статуса ответа"):
+        allure.attach(
+            str(response.status_code),
+            name="Статус ответа",
+            attachment_type=allure.attachment_type.TEXT
+        )
+        assert response.status_code == 404, f"Ожидался статус 404, но получен {response.status_code}"
 
 
 
