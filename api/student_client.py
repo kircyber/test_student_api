@@ -43,7 +43,7 @@ class StudentsClient:
 
     def update_student(self, student_id, student_data):
         self.logger.info(f"PUT /student/{student_id}")
-        response = self.client.put(StudentsEndpoints.UPDATE(student_id), json=student_data)
+        response = self.client.put(StudentsEndpoints.UPDATE(student_id), data=student_data)
 
         self.logger.info(
             f"JSON Payload: {student_data}"

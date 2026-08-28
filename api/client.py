@@ -21,6 +21,6 @@ class ApiClient:
         response = self.session.put(f'{self.base_url}/{endpoint}', json=data)
         return response
 
-    def delete(self, endpoint, data):
-        response = self.session.delete(f'{self.base_url}/{endpoint}', json=data)
+    def delete(self, endpoint):
+        response = self.session.delete(f'{self.base_url}/{endpoint}')
         return response

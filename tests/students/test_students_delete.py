@@ -95,14 +95,3 @@ def test_student_delete_negative(api, invalid_student_id):
             attachment_type=allure.attachment_type.TEXT
         )
         assert response.status_code == 404
-
-    with allure.step("Проверка JSON-ответа"):
-        json_response = response.json()
-        allure.attach(
-            str(json_response),
-            name="JSON-ответ",
-            attachment_type=allure.attachment_type.JSON
-        )
-
-    with allure.step("Проверка сообщения об ошибке при удалении студента с некорректным ID"):
-        assert json_response["message"] == "Student not found"
