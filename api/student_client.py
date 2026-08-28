@@ -24,13 +24,27 @@ class StudentsClient:
         return response
 
     def create_student(self, student_data):
-        response = self.client.post(StudentsEndpoints.CREATE, json=student_data)
-        return response.json()
+        self.logger.info("POST /student")
+        response = self.client.post(StudentsEndpoints.CREATE, data=student_data)
+
+        self.logger.info(
+            f"JSON Payload: {student_data}"
+        )
+
+        self.logger.info(
+            f"Response: {response.status_code}"
+        )
+
+        self.logger.info(
+            f"JSON Response: {response.json() if response.content else 'No Content'}"
+        )
+
+        return response
 
     def update_student(self, student_id, student_data):
         response = self.client.put(StudentsEndpoints.UPDATE(student_id), json=student_data)
-        return response.json()
+        return response
 
     def delete_student(self, student_id):
         response = self.client.delete(StudentsEndpoints.DELETE(student_id))
-        return response.status_code == 204
+        return response
