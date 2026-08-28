@@ -1,7 +1,8 @@
 import allure
 import pytest
 
-from utils.student_faker import generate_fake_student
+from utils.student_faker import generate_fake_student, fake_student_field_negative
+
 
 @allure.story("Создание нового студента")
 def test_create_student(api):
@@ -57,6 +58,46 @@ def test_create_student_negative_phone(api, invalid_phone):
         new_student_data["phone_no"] = invalid_phone
 
     with allure.step("Попытка создания студента с неправильным номером телефона"):
+        response = api.students.create_student(new_student_data)
+
+        allure.attach(
+            f"{response.request.method} {response.request.url}\n\nRequest Body: {{}}",
+            name="Запрос",
+            attachment_type=allure.attachment_type.TEXT
+        )
+
+    with allure.step("Проверка статуса ответа"):
+        allure.attach(
+            str(response.status_code),
+            name="Статус ответа",
+            attachment_type=allure.attachment_type.TEXT
+        )
+        assert response.status_code == 400
+
+    with allure.step("Проверка JSON-ответа"):
+        json_response = response.json()
+        allure.attach(
+            str(json_response),
+            name="JSON-ответ",
+            attachment_type=allure.attachment_type.JSON
+        )
+
+    with allure.step("Проверка сообщения об ошибке"):
+        assert "error" in json_response
+
+
+@pytest.mark.parametrize(
+    "field_name",
+    ["email", "gender", "status"]
+)
+@allure.story("Создание нового студента (негативный тест с неправильным полем {field_name})")
+def test_create_student_negative_phone(api, field_name):
+    with allure.step(f"Генерация данных нового студента с неправильным {field_name}"):
+        new_student_data = generate_fake_student()
+        new_field = fake_student_field_negative()
+        new_student_data[field_name] = new_field
+
+    with allure.step("Попытка создания студента с неправильным email"):
         response = api.students.create_student(new_student_data)
 
         allure.attach(
